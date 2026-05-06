@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--vtl-primary: #057cbf;
+	--vtl-secondary: #0992da;
+	--vtl-accent: #69c9ef;
+	--vtl-text: #0d2f45;
+	--vtl-muted: #4c6b7e;
+	--vtl-panel: #ffffff;
+	--vtl-surface: #f1f9fe;
+	--vtl-border: #cfe7f5;
+	--vtl-chip-bg: #e2f2fb;
+	--vtl-chip-hover: #d2ebf9;
+}
+
+html,
+body,
+#root {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	overflow-x: hidden;
+}
+
+.vtl-markdown {
+	word-break: break-word;
+	overflow-wrap: anywhere;
+	line-height: 1.5;
+}
+
+.vtl-markdown > *:first-child {
+	margin-top: 0;
+}
+
+.vtl-markdown > *:last-child {
+	margin-bottom: 0;
+}
+
+.vtl-markdown p,
+.vtl-markdown ul,
+.vtl-markdown ol,
+.vtl-markdown blockquote,
+.vtl-markdown pre,
+.vtl-markdown table {
+	margin: 0 0 0.6rem;
+}
+
+.vtl-markdown ul,
+.vtl-markdown ol {
+	padding-left: 1.2rem;
+}
+
+.vtl-markdown ul {
+	list-style: disc;
+}
+
+.vtl-markdown ol {
+	list-style: decimal;
+}
+
+.vtl-markdown li + li {
+	margin-top: 0.2rem;
+}
+
+.vtl-markdown a {
+	color: var(--vtl-primary);
+	text-decoration: underline;
+}
+
+.vtl-markdown code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+	font-size: 0.85em;
+	background: #ebf2ff;
+	border-radius: 0.3rem;
+	padding: 0.1rem 0.3rem;
+}
+
+.vtl-markdown pre {
+	background: #111827;
+	color: #f9fafb;
+	border-radius: 0.55rem;
+	padding: 0.7rem;
+	overflow-x: auto;
+}
+
+.vtl-markdown pre code {
+	background: transparent;
+	color: inherit;
+	padding: 0;
+}
+
+.vtl-markdown blockquote {
+	border-left: 3px solid var(--vtl-secondary);
+	padding-left: 0.7rem;
+	color: var(--vtl-muted);
+}
+
+.vtl-markdown table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.vtl-markdown th,
+.vtl-markdown td {
+	border: 1px solid var(--vtl-border);
+	padding: 0.3rem 0.45rem;
+	text-align: left;
+}

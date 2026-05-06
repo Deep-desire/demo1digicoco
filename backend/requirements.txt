@@ -1,0 +1,17 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+python-multipart==0.0.27
+python-dotenv==1.0.1
+langchain==0.1.12
+langchain-openai==0.0.8
+langchain-pinecone==0.0.3
+pinecone-client==3.1.0
+openai==1.51.2
+groq==0.37.1
+httpx==0.23.3
+edge-tts==7.2.7
+langchain-community==0.0.28
+langchain-text-splitters==0.0.1
+pypdf==4.3.1
+numpy==1.26.4
+supabase==1.0.0

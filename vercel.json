@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "routePrefix": "/",
+      "framework": "vite"
+    },
+    "backend": {
+      "entrypoint": "backend",
+      "routePrefix": "/backend"
+    }
+  },
+  "crons": [
+    {
+      "path": "/backend/api/cron/daily-report",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
