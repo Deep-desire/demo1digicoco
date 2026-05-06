@@ -151,19 +151,19 @@ function App() {
         }
         // no valid session
         setSessionId(createSessionId());
-        setLeadStep('chat');
+        setLeadStep('email');
         setUserEmail('');
         setUserName('');
-        setMessages([{ role: 'bot', text: 'Hi! How can I help you today?' }]);
+        setMessages([{ role: 'bot', text: 'Hi! Before we start, what is your email address?' }]);
       })();
       return;
     }
 
     setSessionId(createSessionId());
-    setLeadStep('chat');
+    setLeadStep('email');
     setUserEmail('');
     setUserName('');
-    setMessages([{ role: 'bot', text: 'Hi! How can I help you today?' }]);
+    setMessages([{ role: 'bot', text: 'Hi! Before we start, what is your email address?' }]);
   }, []);
 
 
