@@ -248,7 +248,7 @@ function App() {
     setSessionId(newSid);
     localStorage.setItem(SESSION_STORAGE_KEY, newSid);
     setMessages([]);
-    
+
     // If we have a user, just go to chat step with fresh history
     // Otherwise go back to lead flow
     if (userEmail) {
@@ -258,7 +258,7 @@ function App() {
       setLeadStep('email');
       setMessages([{ role: 'bot', text: 'Hi! Before we start, what is your email address?' }]);
     }
-    
+
     // Refresh sessions list
     if (userEmail) {
       void loadSessionsFromBackend(userEmail);
@@ -786,73 +786,73 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-full bg-slate-200/50 flex items-center justify-center overflow-hidden">
-      <div className="flex h-screen lg:h-[95vh] w-full lg:w-[80%] overflow-hidden bg-white shadow-2xl lg:rounded-3xl border border-slate-200/60">
-      {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-slate-200 shadow-sm z-20">
-        <div className="p-3 border-b border-slate-100 flex justify-center">
-          <img src="/digicoco.png" alt="DIGICoCo Logo" className="w-20 h-auto object-contain" />
-        </div>
+    <div className="h-screen w-full bg-slate-200/50 flex items-center justify-end overflow-hidden">
+      <div className="flex h-screen lg:h-[95vh] w-full lg:w-[70%] overflow-hidden bg-white shadow-2xl lg:rounded-3xl border border-slate-200/60">
+        {/* Sidebar - Desktop */}
+        <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-slate-200 shadow-sm z-20">
+          <div className="p-3 border-b border-slate-100 flex justify-center">
+            <img src="/digicoco.png" alt="DIGICoCo Logo" className="w-20 h-auto object-contain" />
+          </div>
 
-        <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
-          <button
-            onClick={handleNewChat}
-            style={{ backgroundColor: '#167EB7' }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-white shadow-lg hover:opacity-90 transition-all active:scale-95"
-          >
-            <Plus className="w-5 h-5" />
-            <span className="text-sm font-bold uppercase tracking-wider">New Chat</span>
-          </button>
+          <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
+            <button
+              onClick={handleNewChat}
+              style={{ backgroundColor: '#167EB7' }}
+              className="w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-white shadow-lg hover:opacity-90 transition-all active:scale-95"
+            >
+              <Plus className="w-5 h-5" />
+              <span className="text-sm font-bold uppercase tracking-wider">New Chat</span>
+            </button>
 
-          <div className="space-y-2 pt-2">
-            <div className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-between">
-              <span>History</span>
-              {isLoadingSessions && <div className="w-3 h-3 border border-slate-300 border-t-slate-500 rounded-full animate-spin" />}
-            </div>
-            <div className="space-y-1">
-              {sessions.map((s) => (
-                <div
-                  key={s.id}
-                  onClick={() => void switchToSession(s.id)}
-                  className={`px-3 py-2.5 rounded-lg cursor-pointer transition-all border ${s.id === sessionId
+            <div className="space-y-2 pt-2">
+              <div className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-between">
+                <span>History</span>
+                {isLoadingSessions && <div className="w-3 h-3 border border-slate-300 border-t-slate-500 rounded-full animate-spin" />}
+              </div>
+              <div className="space-y-1">
+                {sessions.map((s) => (
+                  <div
+                    key={s.id}
+                    onClick={() => void switchToSession(s.id)}
+                    className={`px-3 py-2.5 rounded-lg cursor-pointer transition-all border ${s.id === sessionId
                       ? 'bg-blue-50 border-blue-200'
                       : 'border-transparent hover:bg-slate-50'
-                    }`}
+                      }`}
+                  >
+                    <p className="text-xs font-semibold text-slate-700 truncate">{s.name}</p>
+                    {s.preview && <p className="text-[10px] text-slate-400 truncate mt-0.5">{s.preview}</p>}
+                  </div>
+                ))}
+                {sessions.length === 0 && !isLoadingSessions && (
+                  <p className="px-3 text-[10px] text-slate-300 italic">No recent sessions</p>
+                )}
+              </div>
+            </div>
+          </nav>
+
+          {userName && (
+            <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div
+                  style={{ backgroundColor: '#167EB7' }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-sm"
                 >
-                  <p className="text-xs font-semibold text-slate-700 truncate">{s.name}</p>
-                  {s.preview && <p className="text-[10px] text-slate-400 truncate mt-0.5">{s.preview}</p>}
+                  {userName.charAt(0).toUpperCase()}
                 </div>
-              ))}
-              {sessions.length === 0 && !isLoadingSessions && (
-                <p className="px-3 text-[10px] text-slate-300 italic">No recent sessions</p>
-              )}
-            </div>
-          </div>
-        </nav>
-
-        {userName && (
-          <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-            <div className="flex items-center gap-3">
-              <div
-                style={{ backgroundColor: '#167EB7' }}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-sm"
-              >
-                {userName.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-bold text-slate-800 truncate">{userName}</span>
-                <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Member</span>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-bold text-slate-800 truncate">{userName}</span>
+                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Member</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </aside>
+          )}
+        </aside>
 
 
-      {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col min-w-0 relative h-full">
-        {/* Header - Mobile & Desktop */}
-        {/* <header 
+        {/* Main Chat Area */}
+        <main className="flex-1 flex flex-col min-w-0 relative h-full">
+          {/* Header - Mobile & Desktop */}
+          {/* <header 
           className="h-14 lg:h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-4 lg:px-8 z-10"
         >
           <div className="flex items-center gap-3 lg:hidden">
@@ -866,104 +866,104 @@ function App() {
           </div>
         </header> */}
 
-        {/* Chat Messages */}
-        <section className="flex-1 overflow-y-auto px-4 py-6 lg:px-24 lg:py-10 space-y-8 scroll-smooth">
-          {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto animate-fade-in">
-              <div className="w-12 h-12 flex items-center justify-center mb-6">
-                <img src="/digicoco.png" alt="DIGICoCo Logo" className="w-full h-auto object-contain" />
+          {/* Chat Messages */}
+          <section className="flex-1 overflow-y-auto px-4 py-6 lg:px-24 lg:py-10 space-y-8 scroll-smooth">
+            {messages.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto animate-fade-in">
+                <div className="w-12 h-12 flex items-center justify-center mb-6">
+                  <img src="/digicoco.png" alt="DIGICoCo Logo" className="w-full h-auto object-contain" />
+                </div>
+                <h3 className="text-2xl font-bold font-outfit text-slate-800 mb-2">How can I help you today?</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  I'm your DIGIC Assistant, here to provide information and support. Type a message to get started.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold font-outfit text-slate-800 mb-2">How can I help you today?</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                I'm your DIGIC Assistant, here to provide information and support. Type a message to get started.
-              </p>
-            </div>
-          )}
+            )}
 
-          {messages.map((msg, idx) => (
-            <div
-              key={`${msg.role}-${idx}`}
-              className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-              style={{ animationDelay: `${Math.min(idx * 0.05, 0.5)}s` }}
-            >
-              <div className={`flex flex-col max-w-[85%] lg:max-w-[75%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                <div
-                  className={`relative p-3 lg:p-4 shadow-sm transition-all duration-200 text-sm ${msg.role === 'user'
-                    ? 'text-slate-800 rounded-2xl rounded-tr-none'
-                    : 'bg-white border border-slate-200/80 text-slate-800 rounded-2xl rounded-tl-none'
-                    }`}
-                  style={msg.role === 'user' ? { backgroundColor: '#ffffff', border: '1px solid #e2e8f0' } : {}}
-                >
-                  {msg.role === 'bot' && msg.text.trim().length === 0 && isLoading && idx === messages.length - 1 ? (
-                    <div className="flex items-center gap-3 text-slate-400">
-                      <div className="flex gap-1">
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            {messages.map((msg, idx) => (
+              <div
+                key={`${msg.role}-${idx}`}
+                className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                style={{ animationDelay: `${Math.min(idx * 0.05, 0.5)}s` }}
+              >
+                <div className={`flex flex-col max-w-[85%] lg:max-w-[75%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div
+                    className={`relative p-3 lg:p-4 shadow-sm transition-all duration-200 text-sm ${msg.role === 'user'
+                      ? 'text-slate-800 rounded-2xl rounded-tr-none'
+                      : 'bg-white border border-slate-200/80 text-slate-800 rounded-2xl rounded-tl-none'
+                      }`}
+                    style={msg.role === 'user' ? { backgroundColor: '#ffffff', border: '1px solid #e2e8f0' } : {}}
+                  >
+                    {msg.role === 'bot' && msg.text.trim().length === 0 && isLoading && idx === messages.length - 1 ? (
+                      <div className="flex items-center gap-3 text-slate-400">
+                        <div className="flex gap-1">
+                          <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                          <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        </div>
+                        <span className="text-xs font-medium">Thinking...</span>
                       </div>
-                      <span className="text-xs font-medium">Thinking...</span>
-                    </div>
-                  ) : msg.role === 'bot' ? (
-                    <MarkdownMessage text={msg.text} />
-                  ) : (
-                    <span className="whitespace-pre-wrap break-words leading-relaxed">{msg.text}</span>
-                  )}
+                    ) : msg.role === 'bot' ? (
+                      <MarkdownMessage text={msg.text} />
+                    ) : (
+                      <span className="whitespace-pre-wrap break-words leading-relaxed">{msg.text}</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {isLoading && !isStreamingResponse && !isVoiceRequestInFlight && !(messages.length > 0 && messages[messages.length - 1]?.role === 'bot' && messages[messages.length - 1]?.text.trim().length === 0) && (
-            <div className="flex justify-start animate-fade-in">
-              <div className="bg-white border border-slate-200/80 p-4 rounded-2xl rounded-tl-none flex items-center gap-3 text-slate-400 shadow-sm">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-xs font-medium">Processing...</span>
+            {isLoading && !isStreamingResponse && !isVoiceRequestInFlight && !(messages.length > 0 && messages[messages.length - 1]?.role === 'bot' && messages[messages.length - 1]?.text.trim().length === 0) && (
+              <div className="flex justify-start animate-fade-in">
+                <div className="bg-white border border-slate-200/80 p-4 rounded-2xl rounded-tl-none flex items-center gap-3 text-slate-400 shadow-sm">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span className="text-xs font-medium">Processing...</span>
+                </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </section>
+            )}
+            <div ref={messagesEndRef} />
+          </section>
 
-        {/* Input Area */}
-        <footer className="p-3 lg:p-4 border-t border-slate-100 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <form
-              onSubmit={handleTextSubmit}
-              className="relative flex items-center gap-2 p-1 rounded-2xl bg-slate-50 border border-slate-200 focus-within:border-primary/50 transition-all shadow-sm"
-            >
-              <div className="flex-1 relative pl-2">
-                <textarea
-                  rows={1}
-                  value={inputText}
-                  onChange={(e) => {
-                    setInputText(e.target.value);
-                    e.target.style.height = 'auto';
-                    e.target.style.height = `${e.target.scrollHeight}px`;
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      void handleTextSubmit(e);
-                    }
-                  }}
-                  placeholder={leadStep === 'email' ? 'Write a message...' : leadStep === 'name' ? 'Name...' : 'Write a message...'}
-                  className="w-full px-2 py-2 bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none resize-none max-h-24 min-h-[36px]"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={!inputText.trim() || isLoading}
-                style={{ backgroundColor: '#167EB7' }}
-                className="p-2.5 text-white rounded-xl hover:opacity-90 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center"
+          {/* Input Area */}
+          <footer className="p-3 lg:p-4 border-t border-slate-100 bg-white">
+            <div className="max-w-4xl mx-auto">
+              <form
+                onSubmit={handleTextSubmit}
+                className="relative flex items-center gap-2 p-1 rounded-2xl bg-slate-50 border border-slate-200 focus-within:border-primary/50 transition-all shadow-sm"
               >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </footer>
-      </main>
+                <div className="flex-1 relative pl-2">
+                  <textarea
+                    rows={1}
+                    value={inputText}
+                    onChange={(e) => {
+                      setInputText(e.target.value);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        void handleTextSubmit(e);
+                      }
+                    }}
+                    placeholder={leadStep === 'email' ? 'Write a message...' : leadStep === 'name' ? 'Name...' : 'Write a message...'}
+                    className="w-full px-2 py-2 bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none resize-none max-h-24 min-h-[36px]"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={!inputText.trim() || isLoading}
+                  style={{ backgroundColor: '#167EB7' }}
+                  className="p-2.5 text-white rounded-xl hover:opacity-90 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+          </footer>
+        </main>
       </div>
     </div>
   );
