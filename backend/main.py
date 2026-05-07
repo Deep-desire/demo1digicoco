@@ -884,22 +884,49 @@ def ensure_pinecone_index_exists() -> None:
 
 
 system_prompt = (
-    "You are DIGICoCo's professional virtual assistant for an IT services company. "
+    "You are DIGICoCo's professional virtual assistant. "
+    "DIGICoCo is a South African digital content and presentation design company (digicoco.co.za) with over 10 years of experience, "
+    "serving clients globally — from startups and SMEs to large corporates, advertising agencies, consulting firms, and government departments. "
+    "DIGICoCo is headquartered in Johannesburg and can be reached at info@digicoco.co.za or +2711 656 8528.\n\n"
+
+    "DIGICoCo's core service areas are:\n"
+    "1. **PowerPoint Services** — Presentation design (consulting, startup, investor, ESG, annual report, staff onboarding, interview, UK market), "
+    "PowerPoint templates, AI-optimised PowerPoint design, cinematic animation, PowerPoint Express (urgent/after-hours), "
+    "presentation retainer solutions, slideshows (corporate, wedding, memorial, invitation, pet), "
+    "conversion to PowerPoint, presentation management, training material, and template formatting workshops.\n"
+    "2. **Create Material (DigiIntegrate)** — Brand design and refresh, Microsoft Office templates (Word, Excel, PowerPoint, 365 Automation), "
+    "Google Docs/Slides/Sheets, data visualisation in Excel, brochures and documents, governance reporting, "
+    "forms and interactive PDFs, translation services (Afrikaans, Zulu, Xhosa, French, Italian, Spanish, and more), "
+    "video and animation production, branded AI video generation, images/photos/3D drawings, audio and sound production, "
+    "express formatting services (Word, tenders, proposals), and influence & leadership communication.\n"
+    "3. **Your Business Online** — Websites that perform (DigiWeb), Google My Business design, online marketing, and social media services.\n"
+    "4. **PowerPoint Retainer Solutions** — Monthly retainer packages for agencies and corporates needing ongoing, on-demand presentation design "
+    "with 24–48 hour turnaround, consistent branding, and predictable costs.\n\n"
+
+    "DIGICoCo's key differentiators: high-quality on-brand design, fast 24–48 hour turnaround, express after-hours service, "
+    "flexible budgets for all company sizes, global delivery, secure online payments in any currency, "
+    "and a network of skilled PowerPoint specialists and freelance designers.\n\n"
+
     "Answer the user's exact question directly and clearly using ONLY the provided DIGICoCo knowledge-base context. "
     "Do not start with generic filler like 'Would you like to know more?'. "
     "Always return the final answer in valid GitHub-flavored Markdown (GFM). "
     "Use clean Markdown structure with short paragraphs and bullet points when useful. "
     "Do not output raw HTML. Do not output JSON unless the user explicitly asks for JSON. "
     "If the user asks about services, provide concrete service categories first. "
-    "If the user asks about AI, explain DIGICoCo AI offerings specifically. "
-    "If the user asks about budget/cost, explain that pricing depends on scope and ask for key requirements. "
-    "If the user asks about previous projects, provide relevant examples only if they are present in context. "
+    "If the user asks about AI offerings, explain DIGICoCo's AI-optimised PowerPoint design and branded AI video generation specifically. "
+    "If the user asks about budget or pricing, explain that pricing depends on project scope and ask for key requirements; "
+    "mention that flexible budgets are available for all company sizes and quotes can be requested at digicoco.co.za/contact-digicoco-1. "
+    "If the user asks about previous projects or clients, provide relevant examples only if they are present in context. "
+    "If the user asks about turnaround time, mention the standard 24–48 hour option and the express after-hours service. "
+    "If the user asks how to get started or contact DIGICoCo, direct them to info@digicoco.co.za, +2711 656 8528, "
+    "or https://www.digicoco.co.za/contact-digicoco-1 for a quote or booking. "
     "For follow-up questions, continue in context and avoid repeating generic summaries. "
-    "If the answer is not present in context, clearly say the information is not available in DIGICoCo knowledge base. "
+    "If the answer is not present in context, clearly say the information is not available in the DIGICoCo knowledge base. "
     "Do not use external knowledge or assumptions. "
-    "Keep answers business-focused, friendly, and practical. Prefer complete answers (around 3-8 sentences) when useful.\n\n"
+    "Keep answers business-focused, friendly, and practical. Prefer complete answers (around 3–8 sentences) when useful.\n\n"
     "Context: {context}"
 )
+
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
@@ -1552,6 +1579,83 @@ async def get_session(session_id: str) -> dict:
         'name': session.get('name'),
         'last_seen_at': session.get('last_seen_at'),
     }
+
+
+@app.get('/api/sessions/list')
+async def list_sessions(email: str) -> dict:
+    """List all sessions for a given email, ordered by most recent first."""
+    email = (email or '').strip()
+    if not email:
+        raise HTTPException(status_code=400, detail='Missing email')
+
+    if not _supabase_client:
+        return {"sessions": []}
+
+    try:
+        resp = _supabase_client.table("sessions").select("session_id, name, email, last_seen_at").filter("email", "eq", email).order("last_seen_at", desc=True).execute()
+        rows = resp.data or []
+
+        sessions_list = []
+        for row in rows:
+            sid = row.get("session_id", "")
+            name = row.get("name", "")
+            last_seen = row.get("last_seen_at", "")
+
+            # Get a preview from the last user message in this session
+            preview = ""
+            try:
+                msg_resp = _supabase_client.table("messages").select("content").filter("session_id", "eq", sid).filter("role", "eq", "user").order("timestamp", desc=True).limit(1).execute()
+                msg_rows = msg_resp.data or []
+                if msg_rows:
+                    preview = (msg_rows[0].get("content") or "")[:60]
+            except Exception:
+                pass
+
+            sessions_list.append({
+                "session_id": sid,
+                "name": name,
+                "email": email,
+                "last_seen_at": last_seen,
+                "preview": preview,
+            })
+
+        return {"sessions": sessions_list}
+    except Exception as e:
+        logger.exception("Failed to list sessions from Supabase")
+        raise HTTPException(status_code=500, detail="Failed to list sessions")
+
+
+@app.get('/api/session/{session_id}/history')
+async def get_session_history(session_id: str) -> dict:
+    """Get full message history for a session from Supabase."""
+    session_id = (session_id or '').strip()
+    if not session_id:
+        raise HTTPException(status_code=400, detail='Missing session_id')
+
+    if not _supabase_client:
+        with _conversation_lock:
+            history = list(_conversation_store.get(session_id, []))
+        messages = []
+        for user_text, bot_text in history:
+            messages.append({"role": "user", "text": user_text})
+            messages.append({"role": "bot", "text": bot_text})
+        return {"messages": messages}
+
+    try:
+        resp = _supabase_client.table("messages").select("role, content, timestamp").filter("session_id", "eq", session_id).order("timestamp", desc=False).execute()
+        rows = resp.data or []
+        messages = []
+        for row in rows:
+            role = "bot" if row.get("role") == "assistant" else "user"
+            messages.append({
+                "role": role,
+                "text": row.get("content") or "",
+                "timestamp": row.get("timestamp"),
+            })
+        return {"messages": messages}
+    except Exception as e:
+        logger.exception("Failed to fetch session history from Supabase")
+        raise HTTPException(status_code=500, detail="Failed to fetch history")
 
 
 @app.post("/api/chat/transcribe")
