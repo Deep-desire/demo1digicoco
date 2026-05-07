@@ -786,7 +786,8 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-slate-50">
+    <div className="h-screen w-full bg-slate-200/50 flex items-center justify-center overflow-hidden">
+      <div className="flex h-screen lg:h-[95vh] w-full lg:w-[80%] overflow-hidden bg-white shadow-2xl lg:rounded-3xl border border-slate-200/60">
       {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-slate-200 shadow-sm z-20">
         <div className="p-3 border-b border-slate-100 flex justify-center">
@@ -963,6 +964,7 @@ function App() {
           </div>
         </footer>
       </main>
+      </div>
     </div>
   );
 
